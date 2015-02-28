@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Bar Torcal F.S.</string>
+
+    <string name="main_button_calendar">Calendario</string>
+    <string name="main_button_players">Jugadores</string>
+    <string name="main_button_goals">Goles</string>
+    <string name="main_button_cards">Tarjetas</string>
+
+    <string name="menu_update">Actualizar datos</string>
+    <string name="menu_update_message">Actualizando datos ...</string>
+    <string name="main_update_message">Hay una actualización disponible\n¿Desea descargarla?</string>
+
+    <string name="ok">Si</string>
+    <string name="cancel">No</string>
+</resources>

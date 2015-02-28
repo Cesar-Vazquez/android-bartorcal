@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.cesarvazquez.bartorcal" >
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/app_icon"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name="com.cesarvazquez.bartorcal.Main"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name="com.cesarvazquez.bartorcal.Calendar" android:label="@string/main_button_calendar" />
+        <activity android:name="com.cesarvazquez.bartorcal.Players"  android:label="@string/main_button_players"  />
+        <activity android:name="com.cesarvazquez.bartorcal.Goals"    android:label="@string/main_button_goals"    />
+        <activity android:name="com.cesarvazquez.bartorcal.Cards"    android:label="@string/main_button_cards"    />
+    </application>
+    <uses-permission android:name="android.permission.INTERNET"/>
+</manifest>

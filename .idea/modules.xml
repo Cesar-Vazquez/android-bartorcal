@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/BarTorcal.iml" filepath="$PROJECT_DIR$/BarTorcal.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bartorcal/bartorcal.iml" filepath="$PROJECT_DIR$/bartorcal/bartorcal.iml" />
+    </modules>
+  </component>
+</project>
+
