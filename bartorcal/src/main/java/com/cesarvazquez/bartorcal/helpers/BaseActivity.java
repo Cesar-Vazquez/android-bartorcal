@@ -62,7 +62,12 @@ public abstract class BaseActivity extends Activity {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        return baseActivityCommonEvents.onTouchEvent(this, event);
+        if (baseActivityCommonEvents != null) {
+            return baseActivityCommonEvents.onTouchEvent(this, event);
+        }
+        else{
+            return false;
+        }
     }
 
     protected void updateDataHandler(Message msg){

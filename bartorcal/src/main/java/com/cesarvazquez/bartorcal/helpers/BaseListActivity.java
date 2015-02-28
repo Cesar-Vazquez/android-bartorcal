@@ -28,7 +28,9 @@ public abstract class BaseListActivity extends ListActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         if (!this.getClass().equals(Main.class)){
             ActionBar actionBar = getActionBar();
-            actionBar.setDisplayHomeAsUpEnabled(true);
+            if (actionBar != null) {
+                actionBar.setDisplayHomeAsUpEnabled(true);
+            }
         }
         baseActivityCommonEvents = new BaseActivityCommonEvents();
         getMenuInflater().inflate(R.menu.main, menu);
@@ -62,7 +64,12 @@ public abstract class BaseListActivity extends ListActivity {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        return baseActivityCommonEvents.onTouchEvent(this, event);
+        if (baseActivityCommonEvents != null) {
+            return baseActivityCommonEvents.onTouchEvent(this, event);
+        }
+        else{
+            return false;
+        }
     }
 
     protected void updateDataHandler(Message msg){

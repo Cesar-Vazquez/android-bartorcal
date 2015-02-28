@@ -1,9 +1,10 @@
 package com.cesarvazquez.bartorcal.tools;
 
-import java.io.InputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
+import java.net.HttpURLConnection;
 import java.util.HashMap;
 
 /**
@@ -28,17 +29,36 @@ public class WebServiceManager {
     }
 
     public synchronized boolean update(String key){
+        boolean result = false;
+        HttpURLConnection conn = null;
         try {
-            URLConnection conn = urls.get(key).openConnection();
-            StringBuffer out = new StringBuffer();
-            InputStream is = conn.getInputStream();
-            while (is.available()>0)
-                out.append((char)is.read());
-            values.put(key, out.toString());
-            return true;
+            conn = (HttpURLConnection) urls.get(key).openConnection();
+            conn.connect();
+
+            int status = conn.getResponseCode();
+            switch (status) {
+                case 200:
+                case 201:
+                    StringBuilder sb = new StringBuilder();
+                    BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        sb.append(line);
+                    }
+                    br.close();
+                    values.put(key, sb.toString());
+                    result = true;
+            }
+
         } catch (Exception e) {
-            return false;
+            result = false;
         }
+        finally {
+            if(conn != null){
+                conn.disconnect();
+            }
+        }
+        return result;
     }
 
     public String get(String key){

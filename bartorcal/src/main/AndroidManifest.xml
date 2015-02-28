@@ -20,4 +20,5 @@
         <activity android:name="com.cesarvazquez.bartorcal.Cards"    android:label="@string/main_button_cards"    />
     </application>
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 </manifest>

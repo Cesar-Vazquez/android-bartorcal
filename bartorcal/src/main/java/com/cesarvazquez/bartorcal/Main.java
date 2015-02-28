@@ -48,7 +48,7 @@ public class Main extends BaseActivity {
         dataManager.updateFromFile(this);
         dataManager.updateFromWebBackground(this, null);
 
-        checkVersion();
+        // checkVersion();
     }
 
     private void checkVersion() {

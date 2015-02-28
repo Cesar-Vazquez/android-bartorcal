@@ -24,17 +24,21 @@ public class VersionManager {
                 try {
                     WebServiceManager.instance.update(WebServiceManager.VERSION);
                     String jsonStr = WebServiceManager.instance.get(WebServiceManager.VERSION);
-                    JSONObject json = new JSONObject(jsonStr);
+                    if (jsonStr != null) {
+                        JSONObject json = new JSONObject(jsonStr);
 
-                    String remote = json.getString(calendar);
-                    int result = (current.equals(remote))? 1 : 0;
+                        String remote = json.getString(calendar);
+                        int result = (current.equals(remote))? 1 : 0;
 
-                    if (handler != null){
-                        Message msg = new Message();
-                        msg.arg1 = result;
-                        handler.sendMessage(msg);
+                        if (handler != null){
+                            Message msg = new Message();
+                            msg.arg1 = result;
+                            handler.sendMessage(msg);
+                        }
                     }
-                } catch (JSONException e) {}
+                } catch (Exception e) {
+
+                }
             }
         });
         thread.start();
