@@ -1,74 +1,118 @@
 package com.cesarvazquez.bartorcal;
 
-import android.app.Dialog;
-import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.Paint;
+import android.graphics.Typeface;
+import android.view.WindowManager;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import android.os.Bundle;
-import android.os.Message;
 
-import com.androidplot.pie.PieChart;
-import com.androidplot.pie.Segment;
-import com.androidplot.pie.SegmentFormatter;
-import com.androidplot.xy.XYSeries;
 import com.cesarvazquez.bartorcal.helpers.BaseActivity;
-import com.cesarvazquez.bartorcal.tools.DataManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.cesarvazquez.bartorcal.tools.DataManager;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.Legend.LegendPosition;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.utils.ColorTemplate;
+import com.github.mikephil.charting.utils.PercentFormatter;
+import com.github.mikephil.charting.utils.ValueFormatter;
+
+
 public class Goals extends BaseActivity {
 
-    private PieChart pie;
+    private PieChart mChart;
     private DataManager dataManager;
-    private float textSize;
+    private int totalGoles;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.goals);
 
         dataManager = DataManager.instance;
-        textSize = getResources().getInteger(R.integer.goals_x_font_size);
 
-        pie = (PieChart) findViewById(R.id.goals_chart);
-        pie.getBackgroundPaint().setColor(getResources().getColor(R.color.Background));
-        updateData();
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        setContentView(R.layout.goals);
+
+        mChart = (PieChart) findViewById(R.id.chart1);
+        mChart.setUsePercentValues(true);
+        // mChart.setHoleColor(Color.rgb(235, 235, 235));
+        mChart.setHoleColorTransparent(true);
+        mChart.setHoleRadius(60f);
+        mChart.setDescription("");
+        mChart.setDrawCenterText(true);
+        mChart.setDrawHoleEnabled(true);
+        mChart.setRotationAngle(0);
+        mChart.setRotationEnabled(true);
+
+        // mChart.setUnit(" €");
+        // mChart.setDrawUnitsInChart(true);
+
+        setData();
+
+        mChart.animateXY(1500, 1500);
+        // mChart.spin(2000, 0, 360);
+
+        Legend l = mChart.getLegend();
+        l.setPosition(LegendPosition.BELOW_CHART_LEFT);
+        l.setXEntrySpace(7f);
+        l.setYEntrySpace(5f);
     }
 
-    private void updateData() {
-        for (Segment serie: pie.getSeriesSet())
-            pie.removeSeries(serie);
+    private void setData() {
 
         ArrayList<HashMap<String, String>> players = dataManager.get(DataManager.players);
 
-        Resources resources = getResources();
-        int[][] colors = new int[][]{
-            {resources.getColor(R.color.Pie1), resources.getColor(R.color.PieText1)},
-            {resources.getColor(R.color.Pie2), resources.getColor(R.color.PieText2)},
-        };
-        int i = 0;
-        for (HashMap<String, String> player : players) {
-            String name = player.get(DataManager.players_nombre_corto);
-            int goals = Integer.parseInt(player.get(DataManager.players_goles));
-            Segment segment = new Segment(name, goals);
+        ArrayList<Entry> yVals = new ArrayList<Entry>();
+        ArrayList<String> xVals = new ArrayList<String>();
 
-            int[] color = colors[i++ % colors.length];
-            int borderColor = Color.DKGRAY;
-
-            SegmentFormatter formatter = new SegmentFormatter(color[0], borderColor, borderColor, borderColor);
-            Paint labelPaint = formatter.getLabelPaint();
-            labelPaint.setColor(color[1]);
-            labelPaint.setTextSize(textSize);
-            labelPaint.setFakeBoldText(true);
-            labelPaint.setTextAlign(Paint.Align.CENTER);
-            pie.addSeries(segment, formatter);
+        int i=0;
+        totalGoles = 0;
+        for (HashMap<String, String> player: players) {
+            float goles = Float.parseFloat(player.get(DataManager.players_goles));
+            totalGoles += goles;
+            if (goles > 0){
+                String titulo = player.get(DataManager.players_nombre_corto);
+                yVals.add(new Entry(goles, i++));
+                xVals.add(titulo);
+            }
         }
-        pie.redraw();
-    }
 
-    @Override
-    protected void updateDataHandler(Message msg) {
-        updateData();
+        PieDataSet dataSet = new PieDataSet(yVals, "");
+        dataSet.setSliceSpace(3f);
+
+        ArrayList<Integer> colors = new ArrayList<Integer>();
+        for (int c : ColorTemplate.VORDIPLOM_COLORS)
+            colors.add(c);
+        for (int c : ColorTemplate.JOYFUL_COLORS)
+            colors.add(c);
+        for (int c : ColorTemplate.COLORFUL_COLORS)
+            colors.add(c);
+        for (int c : ColorTemplate.LIBERTY_COLORS)
+            colors.add(c);
+        for (int c : ColorTemplate.PASTEL_COLORS)
+            colors.add(c);
+        dataSet.setColors(colors);
+
+        PieData data = new PieData(xVals, dataSet);
+        data.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                return ((int)(totalGoles * value / 100)) + "";
+            }
+        });
+        data.setValueTextSize(11f);
+        data.setValueTextColor(Color.BLACK);
+        mChart.setData(data);
+
+        // undo all highlights
+        mChart.highlightValues(null);
+
+        mChart.invalidate();
     }
 }

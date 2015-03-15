@@ -2,13 +2,12 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 21
     buildToolsVersion "21.1.2"
-
     defaultConfig {
         applicationId "cesarvazquez.bartorcal"
         minSdkVersion 15
         targetSdkVersion 21
-        versionCode 1
-        versionName "1.0"
+        versionName '2.0'
+        versionCode 2
     }
     buildTypes {
         release {
@@ -16,14 +15,18 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    productFlavors {
+    }
 }
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.androidplot:androidplot:0.6.1'
     compile files('/home/cesar/Projects/android/BarTorcal/lib/androidplot-core-0.6.1.jar')
+    compile 'com.github.PhilJay:MPAndroidChart:v2.0.8'
 }
 
 repositories {
     maven { url './lib' }
+    maven { url "https://jitpack.io" }
 }
