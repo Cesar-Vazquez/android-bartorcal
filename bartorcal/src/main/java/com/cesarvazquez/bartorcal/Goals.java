@@ -20,8 +20,9 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
-import com.github.mikephil.charting.utils.PercentFormatter;
-import com.github.mikephil.charting.utils.ValueFormatter;
+import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.github.mikephil.charting.utils.ViewPortHandler;
 
 
 public class Goals extends BaseActivity {
@@ -41,27 +42,19 @@ public class Goals extends BaseActivity {
 
         mChart = (PieChart) findViewById(R.id.chart1);
         mChart.setUsePercentValues(true);
-        // mChart.setHoleColor(Color.rgb(235, 235, 235));
-        mChart.setHoleColorTransparent(true);
-        mChart.setHoleRadius(60f);
+        //mChart.setHoleColorTransparent(true);
+        mChart.setHoleRadius(0f);
+        mChart.setTransparentCircleRadius(0f);
         mChart.setDescription("");
         mChart.setDrawCenterText(true);
-        mChart.setDrawHoleEnabled(true);
+        //mChart.setDrawHoleEnabled(true);
         mChart.setRotationAngle(0);
         mChart.setRotationEnabled(true);
 
-        // mChart.setUnit(" €");
-        // mChart.setDrawUnitsInChart(true);
-
         setData();
 
+        mChart.getLegend().setEnabled(false);
         mChart.animateXY(1500, 1500);
-        // mChart.spin(2000, 0, 360);
-
-        Legend l = mChart.getLegend();
-        l.setPosition(LegendPosition.BELOW_CHART_LEFT);
-        l.setXEntrySpace(7f);
-        l.setYEntrySpace(5f);
     }
 
     private void setData() {
@@ -84,34 +77,35 @@ public class Goals extends BaseActivity {
         }
 
         PieDataSet dataSet = new PieDataSet(yVals, "");
-        dataSet.setSliceSpace(3f);
+        dataSet.setSliceSpace(0f);
 
         ArrayList<Integer> colors = new ArrayList<Integer>();
-        for (int c : ColorTemplate.VORDIPLOM_COLORS)
-            colors.add(c);
-        for (int c : ColorTemplate.JOYFUL_COLORS)
-            colors.add(c);
-        for (int c : ColorTemplate.COLORFUL_COLORS)
-            colors.add(c);
-        for (int c : ColorTemplate.LIBERTY_COLORS)
-            colors.add(c);
-        for (int c : ColorTemplate.PASTEL_COLORS)
-            colors.add(c);
+        colors.add(Color.rgb(238,93,10));
+        colors.add(Color.rgb(255,235,4));
+        colors.add(Color.rgb(183,204,1));
+        colors.add(Color.rgb(30,164,41));
+        colors.add(Color.rgb(0,164,155));
+        colors.add(Color.rgb(4,175,227));
+        colors.add(Color.rgb(3,107,180));
+        colors.add(Color.rgb(73,50,138));
+        colors.add(Color.rgb(126,43,135));
+        colors.add(Color.rgb(181,8,98));
+        colors.add(Color.rgb(224,0,112));
+        colors.add(Color.rgb(221,1,27));
+
         dataSet.setColors(colors);
 
         PieData data = new PieData(xVals, dataSet);
+
         data.setValueFormatter(new ValueFormatter() {
             @Override
-            public String getFormattedValue(float value) {
+            public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
                 return ((int)(totalGoles * value / 100)) + "";
             }
         });
         data.setValueTextSize(11f);
-        data.setValueTextColor(Color.BLACK);
+        data.setValueTextColor(Color.rgb(43,43,43));
         mChart.setData(data);
-
-        // undo all highlights
-        mChart.highlightValues(null);
 
         mChart.invalidate();
     }
