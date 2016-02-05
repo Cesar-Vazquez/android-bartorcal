@@ -26,6 +26,9 @@ import java.util.List;
 public class Cards extends BaseActivity {
 
     private static final String[] seriesNames = {DataManager.players_amarillas, DataManager.players_rojas};
+    private static final String minValue = "minValue";
+    private static final String maxValue = "maxValue";
+
     private HashMap<String, List> series;
     private ArrayList<HashMap<String, String>> players;
     private BarChart mChart;
@@ -36,21 +39,16 @@ public class Cards extends BaseActivity {
         setContentView(R.layout.cards);
 
         mChart = (BarChart) findViewById(R.id.chart1);
-
         mChart.setDrawBarShadow(false);
         mChart.setDrawValueAboveBar(true);
-
         mChart.setDescription("");
-
-        // if more than 60 entries are displayed in the chart, no values will be
-        // drawn
         mChart.setMaxVisibleValueCount(60);
-
-        // scaling can now only be done on x- and y-axis separately
         mChart.setPinchZoom(false);
-
         mChart.setDrawGridBackground(false);
-        // mChart.setDrawYLabels(false);
+        mChart.setTouchEnabled(false);
+        mChart.getLegend().setEnabled(false);
+
+        HashMap<String, Integer> dataParameters = setData();
 
         XAxis xAxis = mChart.getXAxis();
         xAxis.setPosition(XAxisPosition.BOTTOM);
@@ -63,6 +61,9 @@ public class Cards extends BaseActivity {
 
         YAxis leftAxis = mChart.getAxisLeft();
         leftAxis.setValueFormatter(custom);
+        leftAxis.setAxisMinValue(dataParameters.get(minValue));
+        leftAxis.setAxisMaxValue(dataParameters.get(maxValue));
+        leftAxis.setLabelCount(dataParameters.get(maxValue) + 1, true);
         leftAxis.setPosition(YAxisLabelPosition.OUTSIDE_CHART);
         leftAxis.setSpaceTop(15f);
         leftAxis.setTextSize(5);
@@ -70,12 +71,13 @@ public class Cards extends BaseActivity {
         YAxis rightAxis = mChart.getAxisRight();
         rightAxis.setEnabled(false);
 
-        setData();
 
-        mChart.getLegend().setEnabled(false);
     }
 
-    private void setData() {
+    private HashMap<String, Integer> setData() {
+        HashMap<String, Integer> dataParameters = new HashMap<String, Integer>();
+        dataParameters.put(minValue, 0);
+        dataParameters.put(maxValue, 0);
 
         players = DataManager.instance.get(DataManager.players);
 
@@ -95,6 +97,11 @@ public class Cards extends BaseActivity {
             try{
                 a = Integer.parseInt(player.get(DataManager.players_amarillas));
                 r = Integer.parseInt(player.get(DataManager.players_rojas));
+
+                int posibleMaxValue = Math.max(a,r);
+                int currentMaxValue = dataParameters.get(maxValue);
+                if (posibleMaxValue>currentMaxValue)
+                    dataParameters.put(maxValue, posibleMaxValue);
             }
             catch(Exception e){}
             amarillas.add(new BarEntry(a, i));
@@ -116,8 +123,11 @@ public class Cards extends BaseActivity {
 
         BarData data = new BarData(xVals, dataSets);
         data.setValueTextSize(10f);
+        data.setDrawValues(false);
 
         mChart.setData(data);
+
+        return dataParameters;
     }
 
     public class CardsYAxisValueFormatter implements YAxisValueFormatter {
